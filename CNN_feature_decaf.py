@@ -1,11 +1,10 @@
 __author__ = 'chensi'
 import numpy as np
 import sys
-caffe_root = '/data/sichen/caffe_svcl/caffe/'
+caffe_root = '/data/sichen/caffe_svcl/caffe_latest/'
 sys.path.insert(0,caffe_root + 'python')
 import caffe
 import glob
-imageset_path = ''
 import cPickle
 from optparse import OptionParser
 import time
@@ -13,18 +12,16 @@ import scipy.io as sio
 import os.path
 import os
 from scipy.sparse import csr_matrix
+caffe.set_mode_gpu()
 
-
-def initial_network_custom(proto_path, model_path):
+def initial_network_custom(proto_path, model_path, mean_path):
 
     net = caffe.Classifier(proto_path,
                            model_path,
-                           mean = np.load(caffe_root+'python/caffe/imagenet/ilsvrc_2012_mean.npy'),
+                           mean = np.load(caffe_root+mean_path),
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 def initial_network_vgg_center():
 
@@ -34,8 +31,6 @@ def initial_network_vgg_center():
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 def initial_network_places_center():
 
@@ -45,8 +40,6 @@ def initial_network_places_center():
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 
 def initial_network_vgg_ten_crops():
@@ -57,8 +50,6 @@ def initial_network_vgg_ten_crops():
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 def initial_network_alex_center():
 
@@ -68,8 +59,6 @@ def initial_network_alex_center():
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 def initial_network_alex_ten_crops():
 
@@ -79,8 +68,6 @@ def initial_network_alex_ten_crops():
                            channel_swap=(2,1,0),
                            raw_scale=255,
                            image_dims=(256,256))
-    net.set_phase_test()
-    net.set_mode_gpu()
     return net
 def get_options_parser():
     parser = OptionParser()
@@ -89,6 +76,7 @@ def get_options_parser():
     parser.add_option('-o','--output',dest='feature_output_path',default=None)
     parser.add_option('--layer',dest='layer',default='conv5')
     parser.add_option('--mode',dest='mode',default='custom')
+    parser.add_option('--mean',dest='mean_path',default='python/caffe/imagenet/ilsvrc_2012_mean.npy')
     parser.add_option('--prototxt', dest = 'prototxt_path')
     parser.add_option('--model', dest = 'model')
     parser.add_option('--center', dest = 'center', default = False);
@@ -127,11 +115,12 @@ def main():
         net = initial_network_vgg_ten_crops()
         oversample = True
     else :
-        net = initial_network_custom(options.prototxt_path, options.model)
+        net = initial_network_custom(options.prototxt_path, options.model, options.mean_path)
         oversample = not options.center
         
     start_time_total = time.time()
     for i in range(len(file_names)):
+    #for i in range(18474,30607):
         start_time = time.time()
         print 'extracting the CNN feature, layer: %s, image No. %d/%d' %(layer,i+1,len(file_names))
         net.predict([caffe.io.load_image(file_names[i])],oversample)        

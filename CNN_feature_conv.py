@@ -18,7 +18,7 @@ def initial_network_vgg():
 
     net.set_phase_test()
     net.set_mode_gpu()
-    net.set_mean('data',np.load('../python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
+    net.set_mean('data',np.load(caffe_root+'python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
     net.set_channel_swap('data',(2,1,0))
     net.set_raw_scale('data',255.0)
     return net
@@ -29,7 +29,7 @@ def initial_network_vgg16():
 
     net.set_phase_test()
     net.set_mode_gpu()
-    net.set_mean('data',np.load('../python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
+    net.set_mean('data',np.load(caffe_root+'python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
     net.set_channel_swap('data',(2,1,0))
     net.set_raw_scale('data',255.0)
     return net
@@ -40,7 +40,7 @@ def initial_network_alex():
 
     net.set_phase_test()
     net.set_mode_gpu()
-    net.set_mean('data',np.load('../python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
+    net.set_mean('data',np.load(caffe_root+'python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
     net.set_channel_swap('data',(2,1,0))
     net.set_raw_scale('data',255.0)
     return net
@@ -51,7 +51,7 @@ def initial_network_custom(prototxt_path, model_path):
 
     net.set_phase_test()
     net.set_mode_gpu()
-    net.set_mean('data',np.load('../python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
+    net.set_mean('data',np.load(caffe_root+'python/caffe/imagenet/ilsvrc_2012_mean.npy'),'channel')
     net.set_channel_swap('data',(2,1,0))
     net.set_raw_scale('data',255.0)
     return net
